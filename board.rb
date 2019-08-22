@@ -22,10 +22,10 @@ class Board
     @grid.each.with_index do |line, i| 
       create_line = i.to_s + " | "
 
-      line.each.with_index do |tile, i2| 
+      line.each.with_index do |tile, j| 
         create_line += tile.value
 
-        (i2 + 1) % 3 == 0 && i2 != 8 ? create_line += " | " : create_line += " "
+        (j + 1) % 3 == 0 && j != 8 ? create_line += " | " : create_line += " "
       end
 
       puts create_line
