@@ -1,3 +1,4 @@
+require 'Set'
 require 'colorize'
 require_relative "tile.rb"
 
@@ -33,13 +34,31 @@ class Board
   end
 
   def solved?
-    @grid.each do |line|
-      row = ""
-      line.each { |tile| row += tile.value }
-      return false if (1..9).to_a.map(&:to_s).any? { |num| !row.include?(num) } 
+    [@grid, @grid.transpose, quadrants_to_rows(@grid)].all? { |grid| rows_solved?(grid) }
+  end
+
+  def rows_solved?(grid)
+    grid.each do |line|
+      value_set = Set.new
+      line.each { |tile| value_set.add(tile.value) }
+      return false if (1..9).map(&:to_s).any? { |num| !value_set.include?(num) }
     end
 
-    return true
+    true
+  end
+
+  def quadrants_to_rows(grid)
+    result = Array.new(9) { Array.new }
+
+    (0..8).each do |i|
+      (0..8).each do |j|
+        quadrant = (i / 3) * 3 + (j / 3)
+
+        result[quadrant] << grid[i][j]
+      end
+    end
+
+    result
   end
 
   def [](pos)
